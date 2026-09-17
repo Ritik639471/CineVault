@@ -1,195 +1,329 @@
-# 🎬 CineVault — Full-Stack Movie Discovery App ([App](https://vault-cine.netlify.app))
+# 🎬 CineVault — Full-Stack Movie Discovery & Streaming App
 
-CineVault is a feature-rich, full-stack web application built on the **MERN Stack** (MongoDB, Express.js, React, Node.js) that lets users discover, track, and review movies using live data from the **TMDB API**. It supports user authentication, personalized watchlists, YouTube trailer playback, community reviews, and intelligent recommendations.
+<div align="center">
 
----
+<img src="https://capsule-render.vercel.app/api?type=waving&color=ec4899&height=180&section=header&text=CineVault&fontSize=50&fontColor=ffffff&fontAlignY=40&desc=Discover%20%E2%80%A2%20Watchlist%20%E2%80%A2%20Trailers%20%E2%80%A2%20Reviews&descAlignY=62&descSize=18" width="100%"/>
 
-## ✨ Features
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://vault-cine.netlify.app)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Ritik639471/CineVault)
 
-### 🔍 Dynamic Movie Search & Discovery
-Users can search for any movie by title using TMDB's extensive database. As they type a query and hit Search, the app fetches live results from the TMDB Search API and displays them in a responsive, animated movie grid. When no search query is entered, the app automatically shows the current **Trending Movies** pulled from TMDB's trending endpoint, so there is always fresh content to discover without needing to search.
+<br/>
 
----
+[![React](https://img.shields.io/badge/React%2019-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite%207-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=flat-square&logo=framer&logoColor=white)](https://www.framer.com/motion/)
+[![Firebase](https://img.shields.io/badge/Firebase%2011-FFCA28?style=flat-square&logo=firebase&logoColor=black)](https://firebase.google.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express.js-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB%20Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![TMDB API](https://img.shields.io/badge/TMDB%20API-01B4E4?style=flat-square&logo=themoviedatabase&logoColor=white)](https://developer.themoviedb.org/)
 
-### 🎛️ Advanced Sorting & Filtering
-When browsing the default trending feed (no search active), three filter/sort dropdowns appear below the search bar:
-- **Sort By:** Choose between Most Popular, Top Rated, or Newest Releases. This uses TMDB's `/discover/movie` endpoint with various `sort_by` parameters.
-- **Genre Filter:** Narrow results to a specific genre such as Action, Comedy, Drama, Fantasy, Horror, Romance, Sci-Fi, or Thriller. Each option uses the official TMDB genre ID.
-- **Year Filter:** Limit results to movies released in a specific year (2020–2024). All three filters work together simultaneously and update the grid instantly without needing a page refresh.
+**A cinematic, responsive web application engineered with React 19, Express, MongoDB Atlas, and TMDB API integration, featuring live trailers, watchlist curation, personalized recommendations, and community reviews.**
 
----
+[Explore Live Demo](https://vault-cine.netlify.app) · [Report Bug](https://github.com/Ritik639471/CineVault/issues) · [Request Feature](https://github.com/Ritik639471/CineVault/issues)
 
-### 🎯 Personalized Recommendations
-When a user is logged in and has movies saved in their watchlist, a **"Recommended For You"** section automatically appears at the top of the home page above the Trending feed. The app picks the most recently added movie from the user's watchlist and queries TMDB's `/movie/{id}/recommendations` endpoint to retrieve a curated list of similar titles. This gives each user a tailored discovery experience based on what they already love.
-
----
-
-### 🎥 Movie Details Modal with Embedded YouTube Trailers
-Clicking on any movie poster opens a rich detail modal overlay without leaving the page. The modal displays:
-- **High-resolution backdrop image** of the movie
-- **Title, year, and TMDB Rating** in a styled badge
-- **Full plot synopsis** pulled from TMDB
-- **Embedded YouTube Trailer** — The app queries TMDB's `/videos` endpoint to find an official Trailer or Teaser on YouTube. A glowing **Play button** appears on top of the poster; clicking it fades in a full YouTube `<iframe>` player directly inside the modal so the user can watch the trailer without opening a new tab or leaving the page.
+</div>
 
 ---
 
-### 💾 Secure User Authentication
-The app uses a completely custom-built authentication system with no third-party auth services:
-- **Registration:** Users sign up with their name, email, and password. Passwords are hashed using `bcryptjs` before being stored in MongoDB — raw passwords are never saved.
-- **Login:** Credentials are verified against the stored hash. On success, a signed **JSON Web Token (JWT)** is returned and stored in `localStorage`.
-- **Persistent Sessions:** When a user visits the app again, the stored token is loaded automatically, keeping them logged in without needing to sign in again.
-- **Protected Routes:** All watchlist and review API endpoints verify the JWT on every request using Express middleware, so only authenticated users can mutate data.
+## 📖 Table of Contents
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [System Architecture](#-system-architecture)
+- [Tech Stack](#-tech-stack)
+- [Directory Structure](#-directory-structure)
+- [API Reference](#-api-reference)
+- [Local Development Setup](#-local-development-setup)
+- [Environment Variables](#-environment-variables)
+- [Deployment Guide](#-deployment-guide)
+- [Author & Acknowledgments](#-author--acknowledgments)
 
 ---
 
-### 🎬 Personal Watchlist
-Every authenticated user has their own private watchlist stored in MongoDB. From any movie's detail modal, they can click **"+ Add to Watchlist"** to save a movie. The Watchlist page shows all saved titles in the familiar responsive grid layout and supports one-click removal. The entire watchlist is fetched fresh from the database on every login, so it stays in sync across multiple devices.
+## 🌟 Overview
+
+**CineVault** transforms the way cinema lovers discover and catalog movies. Powered by **The Movie Database (TMDB) API** and a custom **Node.js/Express** backend, the platform enables real-time search, multi-faceted filtering, high-definition trailer streaming inside modal overlays, personalized watchlist tracking with watched/unwatched toggles, and community reviews.
 
 ---
 
-### ✅ Watch Status Tracking — "Plan to Watch" vs "Watched"
-The Watchlist page features a **tab switcher** that organizes movies into two buckets:
-- **Plan to Watch** — Movies saved but not yet seen. Each card shows a green **"✓ Mark Watched"** button.
-- **Watched** — Movies the user has already seen. Each card shows a grey **"↩ Move to Plan"** button to revert it.
+## ✨ Key Features
 
-Clicking a status button sends a `PUT` request to the backend which updates the movie's `status` field in the database. The UI updates instantly with no page reload required, giving a smooth and satisfying tracking experience.
+### 🔍 Dynamic Discovery & TMDB Search
+- **Live Search with Debounce:** Instant search query matching against TMDB's movie index with responsive animated grid displays.
+- **Trending & Popular Feeds:** Automated default curation displaying trending films when no search query is active.
+- **Dedicated Movie Details Page (`/movie/:id`):** Deep dive into high-resolution movie backdrop, cast list, budget/revenue stats, runtime, and full plot summaries.
+
+### 🎛️ Advanced Multi-Criteria Filtering
+- **Sort Filters:** Filter results dynamically by *Most Popular*, *Top Rated*, or *Newest Releases*.
+- **Genre Selection:** Real-time genre tagging (Action, Comedy, Drama, Sci-Fi, Horror, Thriller, etc.) matching official TMDB genre IDs.
+- **Release Year Filtering:** Limit results to specific release windows (2020–2024+) with zero page reloads.
+
+### 🎯 Personalized Recommendation Engine
+- **Watchlist-Driven Recommendations:** When users log in and curate movies, the app identifies their latest saved film and automatically queries TMDB's `/movie/{id}/recommendations` endpoint to showcase a tailored *"Recommended For You"* ribbon.
+
+### 🎥 Embedded YouTube Trailer Playback
+- **In-Modal Streaming:** Queries TMDB `/videos` API to automatically retrieve official trailers and teasers.
+- **Interactive Player:** One-click launch with a smooth glowing play icon that replaces the poster with an embedded YouTube `<iframe>` player.
+
+### 💾 Personal Watchlist & Status Tracker
+- **Status Lifecycle:** Mark films as **`plan_to_watch`** or **`watched`** with instant UI state reconciliation.
+- **Cloud Synchronization:** Watchlist state is preserved in MongoDB Atlas, persisting across user devices and sessions.
+- **One-Click Add/Remove:** Toggle saved state directly from movie cards or the detail view.
+
+### ⭐ Community Reviews & Rating System
+- **Upsert Rating Logic:** Authenticated users can leave 1–5 star ratings and written reviews; submitting an update automatically amends existing reviews without duplicating records.
+- **Public Feed:** Community feedback is visible to all visitors in reverse chronological order.
+
+### ✨ Modern Design & Fluid Motion
+- **Glassmorphism Theme:** Dark-mode aesthetic accented with neon purple/magenta glows and frosted glass backdrops.
+- **Framer Motion:** Staggered card reveals, springy modals, smooth page transitions, and interactive scale effects.
 
 ---
 
-### ⭐ Community Reviews & Ratings
-Inside every movie detail modal, there is a full **User Reviews section** below the synopsis:
-- **Viewing Reviews:** Any visitor (logged in or not) can read all community reviews for a movie, sorted from newest to oldest. Each review shows the reviewer's username, their star rating (1–5 stars), and their written thoughts.
-- **Writing a Review:** Logged-in users see a review form with a star rating dropdown and a text area. Submitting the form sends a POST request to the backend which saves the review to MongoDB tied to their account. If the user has already reviewed that movie, the form intelligently **upserts** (updates the existing review) instead of creating a duplicate.
-- **Persisted & Real-time:** Reviews are stored in MongoDB and loaded fresh every time the modal opens, so everyone sees the latest community feedback in real time.
+## 📐 System Architecture
 
----
+```mermaid
+flowchart TD
+    subgraph Client["React 19 SPA (Netlify)"]
+        UI_Main["Entry & Providers<br/>[main.jsx & App.jsx]"]
+        UI_Header["Header & Search Bar<br/>[Header.jsx]"]
+        UI_Home["Discovery Home<br/>[Home.jsx]"]
+        UI_MoviePage["Movie Detail Page<br/>[MoviePage.jsx]"]
+        UI_Watchlist["Watchlist Dashboard<br/>[Watchlist.jsx]"]
+        UI_Modal["Movie Modal & Trailer<br/>[MovieModal.jsx]"]
+        UI_Auth["Auth Modal<br/>[AuthModal.jsx]"]
+        State_Auth["Auth Context<br/>[AuthContext.jsx]"]
+        State_Watchlist["Watchlist Context<br/>[WatchlistContext.jsx]"]
+    end
 
-### ✨ Premium UI & Animations
-The entire interface is designed to feel premium and responsive:
-- All page transitions and content loads use **Framer Motion** animations with staggered card reveals, smooth spring transitions, and fade effects.
-- The UI uses a dark **glassmorphism** design system with gradient text, frosted panels, and glowing purple/pink accent colors.
-- Movie cards have hover scale effects and a sliding synopsis overlay.
-- All buttons have subtle hover animations and active states.
+    subgraph Backend["Express API (Render)"]
+        Server["Express Server<br/>[server.js]"]
+        Route_Auth["Auth Endpoints<br/>/api/auth"]
+        Route_Watchlist["Watchlist Endpoints<br/>/api/watchlist"]
+        Route_Reviews["Reviews Endpoints<br/>/api/reviews"]
+        MW_Auth["JWT Middleware"]
+    end
 
----
+    subgraph External["External APIs & Database"]
+        API_TMDB{{"TMDB API<br/>Movies, Search, Trailers"}}
+        API_YouTube{{"YouTube Embed API<br/>Trailer Playback"}}
+        DB_Mongo[("MongoDB Atlas<br/>Users, Watchlist, Reviews")]
+    end
 
-## 📂 Project Structure
+    UI_Main --> UI_Header
+    UI_Main --> UI_Home
+    UI_Main --> UI_MoviePage
+    UI_Main --> UI_Watchlist
+    UI_Home --> UI_Modal
+    UI_Watchlist --> UI_Modal
+    UI_Header --> UI_Auth
 
-```
-CineVault/
-├── frontend/                 # React + Vite application
-│   ├── src/
-│   │   ├── components/       # MovieCard, MovieModal, Pagination, etc.
-│   │   ├── contexts/         # AuthContext, WatchlistContext (global state)
-│   │   ├── pages/            # Home, Watchlist
-│   │   ├── App.jsx           # Router setup
-│   │   └── index.css         # Tailwind CSS + Global Styles
-│   ├── .env                  # VITE_TMDB_API_KEY, VITE_API_URL
-│   └── package.json
-│
-├── backend/                  # Node.js + Express REST API
-│   ├── models/
-│   │   ├── User.js           # Auth schema (name, email, hashed password)
-│   │   ├── Watchlist.js      # Watchlist schema (userId, movieId, status)
-│   │   └── Review.js         # Reviews schema (userId, rating, reviewText)
-│   ├── .env                  # PORT, MONGO_URI, JWT_SECRET
-│   ├── server.js             # All API route handlers
-│   └── package.json
-│
-└── README.md
+    UI_Home <-->|"Search & Recommendations"| API_TMDB
+    UI_Modal <-->|"Fetch Trailer Keys"| API_TMDB
+    UI_Modal <-->|"Embed Player"| API_YouTube
+
+    UI_Auth -->|"Login / Register"| Route_Auth
+    State_Watchlist -->|"Sync Watchlist"| Route_Watchlist
+    UI_Modal -->|"Fetch / Post Reviews"| Route_Reviews
+
+    Server --> Route_Auth
+    Server --> Route_Watchlist
+    Server --> Route_Reviews
+
+    Route_Watchlist --> MW_Auth
+    Route_Reviews --> MW_Auth
+
+    Route_Auth --> DB_Mongo
+    Route_Watchlist --> DB_Mongo
+    Route_Reviews --> DB_Mongo
 ```
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category | Technology |
-|---|---|
-| Frontend Framework | React 19 + Vite |
-| Styling | Tailwind CSS v4 |
-| Animations | Framer Motion |
-| Backend | Node.js + Express |
-| Database | MongoDB + Mongoose |
-| Authentication | JSON Web Tokens (JWT) + bcryptjs |
-| Movie Data | TMDB API (The Movie Database) |
-| Trailers | YouTube IFrame embed via TMDB video endpoint |
+### Frontend
+- **Framework:** React 19 (`19.1.0`)
+- **Build Tool:** Vite 7 (`7.0.4`)
+- **Styling:** Tailwind CSS v4 (`4.2.2`)
+- **Animation:** Framer Motion (`12.23.3`)
+- **Routing:** React Router DOM v7 (`7.6.3`)
+- **Authentication SDK:** Firebase (`11.10.0`) + Custom JWT integration
+- **Deployment:** Netlify
+
+### Backend
+- **Framework:** Express.js (`4.21.1`) on Node.js
+- **Database:** MongoDB Atlas + Mongoose (`8.8.4`)
+- **Auth Security:** JSON Web Tokens (`jsonwebtoken` 9.0.2) + `bcryptjs` (2.4.3)
+- **CORS & Config:** `cors` (2.8.5) + `dotenv` (16.4.5)
+- **Deployment:** Render
+
+### Third-Party Services
+- **TMDB API:** Movie metadata, credits, release schedules, and video identifiers
+- **YouTube IFrame API:** Responsive trailer streaming
 
 ---
 
-## ⚙️ Local Development Setup
+## 📁 Directory Structure
+
+```text
+CineVault/
+├── backend/
+│   ├── models/
+│   │   ├── Review.js          # Review schema (userId, movieId, rating, reviewText, userName)
+│   │   ├── User.js            # User credentials & account details
+│   │   └── Watchlist.js       # Watchlist items (userId, movieId, title, poster_path, status)
+│   ├── .env                   # Server environment configurations
+│   ├── server.js              # REST endpoints, auth middleware & DB connection
+│   └── package.json
+│
+└── frontend/
+    ├── public/
+    │   └── _redirects         # Netlify SPA routing rules
+    ├── src/
+    │   ├── components/
+    │   │   ├── AuthModal.jsx  # Sign in / Register modal dialog
+    │   │   ├── Header.jsx     # Brand header, search input, genre filters, nav
+    │   │   ├── MovieCard.jsx  # Poster display, rating badge, quick watchlist trigger
+    │   │   ├── MovieModal.jsx # Detailed synopsis, YouTube trailer player, reviews
+    │   │   └── Pagination.jsx # Page navigation controls
+    │   ├── contexts/
+    │   │   ├── AuthContext.jsx       # Global user token & session state
+    │   │   └── WatchlistContext.jsx  # Global watchlist synchronized with backend
+    │   ├── pages/
+    │   │   ├── Home.jsx       # Trending feed, search results, recommendations
+    │   │   ├── MoviePage.jsx  # Full-page movie metadata explorer
+    │   │   └── Watchlist.jsx  # Categorized watchlist ("Plan to Watch" vs "Watched")
+    │   ├── App.jsx            # Routing hierarchy & context providers
+    │   ├── index.css          # Tailwind CSS v4 & custom scrollbar styles
+    │   └── main.jsx           # Client root mounting
+    ├── vite.config.js
+    └── package.json
+```
+
+---
+
+## 🔌 API Reference
+
+### Authentication (`/api/auth`)
+| Method | Endpoint | Description | Auth Required |
+|:---|:---|:---|:---:|
+| `POST` | `/api/auth/register` | Register user (`name`, `email`, `password`) | No |
+| `POST` | `/api/auth/login` | Authenticate user & receive signed JWT | No |
+
+### Watchlist (`/api/watchlist`)
+| Method | Endpoint | Description | Auth Required |
+|:---|:---|:---|:---:|
+| `GET` | `/api/watchlist` | Get all saved movies for authenticated user | Yes |
+| `POST` | `/api/watchlist` | Add a movie (`movieId`, `title`, `poster_path`, `vote_average`) | Yes |
+| `DELETE`| `/api/watchlist/:id` | Remove a movie from watchlist by TMDB ID | Yes |
+| `PUT` | `/api/watchlist/:id/status` | Update status (`plan_to_watch` or `watched`) | Yes |
+
+### Community Reviews (`/api/reviews`)
+| Method | Endpoint | Description | Auth Required |
+|:---|:---|:---|:---:|
+| `GET` | `/api/reviews/:movieId` | Fetch community reviews for a movie | No |
+| `POST` | `/api/reviews` | Create or upsert a movie review (`movieId`, `rating`, `reviewText`) | Yes |
+
+---
+
+## 🚀 Local Development Setup
 
 ### Prerequisites
-- Node.js v18 or later
-- A free [TMDB API key](https://developer.themoviedb.org/docs/getting-started)
-- A [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster (free tier works fine)
+- [Node.js](https://nodejs.org/) (v18 or newer)
+- Free [TMDB API Key](https://developer.themoviedb.org/docs/getting-started)
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster connection string
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/CineVault.git
+git clone https://github.com/Ritik639471/CineVault.git
 cd CineVault
 ```
 
-### 2. Configure Environment Variables
-
-**Frontend** — create `frontend/.env`:
-```env
-VITE_TMDB_API_KEY=your_tmdb_api_key_here
-VITE_API_URL=http://localhost:5000
-```
-
-**Backend** — create `backend/.env`:
-```env
-PORT=5000
-MONGO_URI=your_mongodb_atlas_connection_string
-JWT_SECRET=any_long_random_secret_string
-```
-> ⚠️ If your MongoDB Atlas password contains special characters like `@`, URL-encode them (e.g., `@` becomes `%40`) in the connection string.
-
-### 3. Install & Run
-
-Open **two separate terminals**.
-
-**Terminal 1 — Backend:**
+### 2. Configure Backend
 ```bash
 cd backend
 npm install
-npm run start
 ```
 
-**Terminal 2 — Frontend:**
+Create a `.env` file in `backend/`:
+```env
+PORT=5000
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/cinevault
+JWT_SECRET=your_jwt_secret_key_here
+```
+
+Start the API server:
 ```bash
-cd frontend
-npm install
 npm run dev
 ```
 
-The app will be live at `http://localhost:5173`!
+### 3. Configure Frontend
+Open a second terminal window:
+```bash
+cd frontend
+npm install
+```
+
+Create a `.env` file in `frontend/`:
+```env
+VITE_TMDB_API_KEY=your_tmdb_api_key
+VITE_API_URL=http://localhost:5000
+```
+
+Start the client:
+```bash
+npm run dev
+```
+
+Visit `http://localhost:5173` to test the application.
 
 ---
 
-## 📦 Deployment Guide
+## ⚙️ Environment Variables
 
-Since the app uses a custom Node.js backend, the deployment is split across two hosting platforms.
-
-### Step 1: Deploy the Backend to Render (Free)
-1. Go to [render.com](https://render.com) and create a free account.
-2. Click **New > Web Service** and connect your GitHub repository.
-3. Set the **Root Directory** to `backend`.
-4. Set the **Build Command** to `npm install` and **Start Command** to `node server.js`.
-5. In the **Environment Variables** section, add:
-   - `MONGO_URI` — your Atlas connection string
-   - `JWT_SECRET` — your secret key
-6. Click **Deploy**. Once done, copy your live URL (e.g. `https://cinevault-api.onrender.com`).
-
-### Step 2: Deploy the Frontend to Netlify
-1. Go to your existing [Netlify](https://netlify.com) site dashboard.
-2. Under **Site Configuration > Environment Variables**, add:
-   - `VITE_TMDB_API_KEY` — your TMDB key
-   - `VITE_API_URL` — the Render URL from Step 1 (e.g. `https://cinevault-api.onrender.com`)
-3. Under **Build Settings**, set the **Base Directory** to `frontend` and **Build Command** to `npm run build`.
-4. Trigger a redeploy. Your site will now talk to the live production backend!
+| Variable | Scope | Description |
+|:---|:---|:---|
+| `PORT` | Backend | Port number for Express server (default: 5000) |
+| `MONGO_URI` | Backend | MongoDB Atlas connection string |
+| `JWT_SECRET` | Backend | Secret string used for signing authentication tokens |
+| `VITE_TMDB_API_KEY` | Frontend | TMDB v3 API Key for movie querying |
+| `VITE_API_URL` | Frontend | Backend API base URL (e.g. `http://localhost:5000` or Render URL) |
 
 ---
 
-## 📜 License
-This project is open-source and built for learning purposes.
+## 🌐 Deployment Guide
+
+### Backend on Render
+1. Create a **New Web Service** on [Render](https://render.com).
+2. Connect the repository: `Ritik639471/CineVault`.
+3. Set **Root Directory** to `backend`.
+4. Build Command: `npm install`
+5. Start Command: `node server.js`
+6. Supply `MONGO_URI` and `JWT_SECRET` environment variables.
+
+### Frontend on Netlify
+1. Log in to [Netlify](https://netlify.com) and create a new site from your Git repository.
+2. Set **Base Directory** to `frontend`.
+3. Set **Build Command** to `npm run build`.
+4. Set **Publish Directory** to `frontend/dist`.
+5. Under **Environment Variables**, add `VITE_TMDB_API_KEY` and `VITE_API_URL`.
+6. Deploy! The included `frontend/public/_redirects` ensures seamless SPA routing.
+
+---
+
+## 👤 Author & Acknowledgments
+
+Developed with ❤️ by **[Ritik Maurya](https://github.com/Ritik639471)**
+
+- 🎓 B.Tech in Electrical Engineering, **NIT Durgapur**
+- 🏆 ICPC '25 Regionalist (Amritapuri & Kanpur, Rank 80)
+- ⚔️ Codeforces Specialist (1417) · CodeChef 3-Star (1696) · LeetCode Top 17%
+- 💼 Connect on [LinkedIn](https://www.linkedin.com/in/ritik-maurya-736b3b324) · Reach out via [Email](mailto:ritikmaurya639471@gmail.com)
+
+---
+
+<div align="center">
+  <sub>⭐️ Star CineVault on GitHub if you enjoy discovering movies with it!</sub>
+</div>
