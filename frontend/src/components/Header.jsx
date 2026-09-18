@@ -6,11 +6,11 @@ import AuthModal from "./AuthModal";
 
 /* Animated film-reel particles that float around the logo */
 const PARTICLES = [
-  { x: -28, y: -16, delay: 0,    size: 5  },
-  { x:  28, y: -18, delay: 0.3,  size: 4  },
-  { x: -22, y:  18, delay: 0.6,  size: 3  },
-  { x:  24, y:  16, delay: 0.9,  size: 5  },
-  { x:   0, y: -24, delay: 0.45, size: 3  },
+  { x: -28, y: -16, delay: 0, size: 5 },
+  { x: 28, y: -18, delay: 0.3, size: 4 },
+  { x: -22, y: 18, delay: 0.6, size: 3 },
+  { x: 24, y: 16, delay: 0.9, size: 5 },
+  { x: 0, y: -24, delay: 0.45, size: 3 },
 ];
 
 const LogoParticle = React.memo(({ x, y, delay, size }) => (
@@ -45,9 +45,8 @@ const Header = () => {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 border-b border-white/5 ${
-          scrolled ? "bg-black/80 backdrop-blur-xl shadow-lg shadow-purple-900/20 py-4" : "bg-[#09090b]/90 backdrop-blur-lg py-6"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 border-b border-white/5 ${scrolled ? "bg-black/80 backdrop-blur-xl shadow-lg shadow-purple-900/20 py-4" : "bg-[#09090b]/90 backdrop-blur-lg py-6"
+          }`}
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 120, damping: 20, delay: 0.1 }}
@@ -122,14 +121,13 @@ const Header = () => {
             transition={{ delay: 0.4, type: "spring", stiffness: 120 }}
           >
             {[{ path: "/", label: "Home", activeColor: "text-purple-400" },
-              { path: "/watchlist", label: "Watchlist", activeColor: "text-pink-400" }
+            { path: "/watchlist", label: "Watchlist", activeColor: "text-pink-400" }
             ].map(({ path, label, activeColor }) => (
               <Link
                 key={path}
                 to={path}
-                className={`relative transition-colors hover:${activeColor} ${
-                  location.pathname === path ? `${activeColor} font-semibold` : "text-gray-300"
-                }`}
+                className={`relative transition-colors hover:${activeColor} ${location.pathname === path ? `${activeColor} font-semibold` : "text-gray-300"
+                  }`}
               >
                 {label}
                 {location.pathname === path && (
@@ -189,7 +187,7 @@ const Header = () => {
         </div>
       </motion.header>
 
-      {/* Spacer to prevent content hiding under fixed header */}
+      { }
       <div className="h-24" />
 
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setAuthModalOpen(false)} />
