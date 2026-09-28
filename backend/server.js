@@ -13,8 +13,39 @@ const Review = require('./models/Review');
 
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://vault-cine.netlify.app',
+  process.env.FRONTEND_URL,
+  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [])
+].filter(Boolean);
+
 app.use(express.json());
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith('.netlify.app') ||
+      origin.endsWith('.vercel.app')
+    ) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
+
+// Health check endpoint for Docker / AWS
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'CineVault API',
+    database: mongoose.connection.readyState === 1 ? 'CONNECTED' : 'DISCONNECTED',
+    uptime: Math.floor(process.uptime())
+  });
+});
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/cinevault';
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_cinevault_key_123';
