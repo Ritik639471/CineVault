@@ -32,7 +32,7 @@ app.use(cors({
     ) {
       return callback(null, true);
     }
-    return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
   },
   credentials: true
 }));
@@ -48,7 +48,12 @@ app.get('/api/health', (req, res) => {
 });
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/cinevault';
-const JWT_SECRET = process.env.JWT_SECRET || 'secret_cinevault_key_123';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET is not set in environment variables!');
+  process.exit(1);
+}
 
 mongoose.connect(MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
@@ -77,6 +82,7 @@ app.post('/api/auth/register', async (req, res) => {
     });
 
   } catch (error) {
+    console.error('Register error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -99,6 +105,7 @@ app.post('/api/auth/login', async (req, res) => {
     });
 
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -122,7 +129,8 @@ app.get('/api/watchlist', authMiddleware, async (req, res) => {
   try {
     const data = await Watchlist.find({ userId: req.user.userId });
     res.json(data);
-  } catch {
+  } catch (error) {
+    console.error('Watchlist GET error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -155,7 +163,8 @@ app.post('/api/watchlist', authMiddleware, async (req, res) => {
     const saved = await item.save();
     res.status(201).json(saved);
 
-  } catch {
+  } catch (error) {
+    console.error('Watchlist POST error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -171,7 +180,8 @@ app.delete('/api/watchlist/:id', authMiddleware, async (req, res) => {
 
     res.json({ success: true });
 
-  } catch {
+  } catch (error) {
+    console.error('Watchlist DELETE error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -194,7 +204,20 @@ app.put('/api/watchlist/:id/status', authMiddleware, async (req, res) => {
 
     res.json(updated);
 
-  } catch {
+  } catch (error) {
+    console.error('Watchlist status error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// NEW: GET /api/auth/me — verify session & return current user (useful for page reload)
+app.get('/api/auth/me', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select('-password');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ id: user._id, name: user.name, email: user.email });
+  } catch (error) {
+    console.error('Auth/me error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -203,7 +226,8 @@ app.get('/api/reviews/:movieId', async (req, res) => {
   try {
     const reviews = await Review.find({ movieId: req.params.movieId });
     res.json(reviews);
-  } catch {
+  } catch (error) {
+    console.error('Reviews GET error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -211,6 +235,13 @@ app.get('/api/reviews/:movieId', async (req, res) => {
 app.post('/api/reviews', authMiddleware, async (req, res) => {
   try {
     const { movieId, rating, reviewText } = req.body;
+
+    if (!movieId || !rating) {
+      return res.status(400).json({ error: 'movieId and rating are required' });
+    }
+    if (rating < 1 || rating > 10) {
+      return res.status(400).json({ error: 'Rating must be between 1 and 10' });
+    }
 
     const user = await User.findById(req.user.userId);
 
@@ -222,12 +253,13 @@ app.post('/api/reviews', authMiddleware, async (req, res) => {
 
     res.json(review);
 
-  } catch {
+  } catch (error) {
+    console.error('Reviews POST error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-const distPath = path.join(__dirname, '../dist');
+const distPath = path.join(__dirname, '../frontend/dist');
 
 if (process.env.NODE_ENV === 'production' && fs.existsSync(distPath)) {
   app.use(express.static(distPath));

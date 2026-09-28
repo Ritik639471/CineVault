@@ -5,6 +5,7 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=ec4899&height=180&section=header&text=CineVault&fontSize=50&fontColor=ffffff&fontAlignY=40&desc=Discover%20%E2%80%A2%20Watchlist%20%E2%80%A2%20Trailers%20%E2%80%A2%20Reviews&descAlignY=62&descSize=18" width="100%"/>
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://vault-cine.netlify.app)
+[![Backend API](https://img.shields.io/badge/Backend%20API-AWS_EC2-FF9900?style=for-the-badge&logo=amazonwebservices&logoColor=white)](https://ritik-movies.duckdns.org/api/health)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Ritik639471/CineVault)
 
 <br/>
@@ -17,6 +18,8 @@
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express.js-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB%20Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![AWS EC2](https://img.shields.io/badge/AWS_EC2-232F3E?style=flat-square&logo=amazonwebservices&logoColor=white)](https://aws.amazon.com/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
 [![TMDB API](https://img.shields.io/badge/TMDB%20API-01B4E4?style=flat-square&logo=themoviedatabase&logoColor=white)](https://developer.themoviedb.org/)
 
 **A cinematic, responsive web application engineered with React 19, Express, MongoDB Atlas, and TMDB API integration, featuring live trailers, watchlist curation, personalized recommendations, and community reviews.**
@@ -295,20 +298,19 @@ Visit `http://localhost:5173` to test the application.
 
 ## 🌐 Deployment Guide
 
-### Backend on Render
-1. Create a **New Web Service** on [Render](https://render.com).
-2. Connect the repository: `Ritik639471/CineVault`.
-3. Set **Root Directory** to `backend`.
-4. Build Command: `npm install`
-5. Start Command: `node server.js`
-6. Supply `MONGO_URI` and `JWT_SECRET` environment variables.
+### Backend on AWS EC2 (Docker Compose + Nginx + SSL)
+1. Containerized with Docker and hosted on an **AWS EC2 Ubuntu Instance** running 24/7 with zero cold starts.
+2. Reverse-proxied via **Nginx** with automated TLS certificates by **Let's Encrypt / Certbot**.
+3. Live Public API: `https://ritik-movies.duckdns.org`
 
 ### Frontend on Netlify
 1. Log in to [Netlify](https://netlify.com) and create a new site from your Git repository.
 2. Set **Base Directory** to `frontend`.
 3. Set **Build Command** to `npm run build`.
 4. Set **Publish Directory** to `frontend/dist`.
-5. Under **Environment Variables**, add `VITE_TMDB_API_KEY` and `VITE_API_URL`.
+5. Under **Environment Variables**, add:
+   - `VITE_TMDB_API_KEY=your_tmdb_api_key`
+   - `VITE_API_URL=https://ritik-movies.duckdns.org`
 6. Deploy! The included `frontend/public/_redirects` ensures seamless SPA routing.
 
 ---
