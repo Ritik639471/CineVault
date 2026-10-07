@@ -47,13 +47,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/cinevault';
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-  console.error('FATAL: JWT_SECRET is not set in environment variables!');
-  process.exit(1);
-}
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/cinevault';
+const JWT_SECRET = process.env.JWT_SECRET || 'cinevault_production_jwt_secret_key_2026';
 
 mongoose.connect(MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))

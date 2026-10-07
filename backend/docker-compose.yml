@@ -1,3 +1,5 @@
+name: cinevault
+
 services:
   cinevault:
     build:
